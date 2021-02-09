@@ -1,0 +1,233 @@
+$pink: #e4685d;
+$bggray: #ededed;
+
+body {
+  padding: 5px;
+  width: 280px;
+}
+
+button {
+  height: 30px;
+  width: auto;
+  outline: none;
+}
+
+input {
+  margin-bottom: 5px;
+}
+
+.header {
+  font-weight: bold;
+  margin-bottom: 15px;
+
+}
+
+.header img {
+  width: 30px;
+  margin-right: 11px;
+}
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+
+
+  &.scraping, &.downloading {
+
+    .lds-ring {
+      display: block;
+    }
+  }
+
+  .message {
+    background: $bggray;
+    flex-grow: 1;
+    margin-right: 31px;
+    margin-bottom: 10px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    position: relative;
+    border-radius: 5px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 15px;
+    background: $bggray;
+    border-radius: 6px;
+    margin-bottom: 10px;
+
+    .text {
+      position: absolute;
+      left: 50%;
+    }
+
+    .progress-inner {
+      width: 0%;
+      background: $pink;
+      height: 100%;
+      font-size: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: white;
+      transition: all 0.2s ease;
+    }
+
+  }
+
+}
+
+.report {
+  font-size: 10px;
+  line-height: 13px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+button {
+  border-radius:6px;
+  display:inline-block;
+  cursor:pointer;
+  font-family:Arial;
+  font-size:12px;
+  font-weight:bold;
+  padding:6px 8px;
+  text-decoration:none;
+  border: none;
+}
+
+input {
+  padding: 7px 5px;
+  border-radius: 6px;
+  border: 1px solid gray;
+  width: 65%;
+}
+
+.tbutton {
+  background-color: $pink;
+  color: white;
+
+  &:hover {
+    background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
+    background-color:#e4685d;
+  }
+
+}
+
+.cbutton {
+  background-color:#ededed;
+  color: $pink;
+   &:hover {
+     background-color:#dbdbdb;
+   }
+
+}
+
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: block;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+}
+
+
+/* The slider */
+.slider {
+  position: relative;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $bggray;
+  -webkit-transition: .2s;
+  transition: .2s;
+  width: 40px;
+  height: 15px;
+  display: inline-block;
+  border-radius: 34px;
+
+  &:before {
+    position: absolute;
+    content: "";
+    height: 9px;
+    width: 9px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+    border-radius: 50%;
+  }
+
+}
+
+input:checked + .slider {
+  background-color: $pink;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px $pink;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+
+.lds-ring {
+  display: none;
+  position: absolute;
+  right: 13px;
+  top: -3px;
+  width: 20px;
+  height: 20px;
+}
+.lds-ring div {
+  $size: 20px;
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: $size;
+  height: $size;
+  margin: 8px;
+  border: $size/8 solid $pink;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: $pink transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

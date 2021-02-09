@@ -1,0 +1,28 @@
+{
+  "name": "Patreon Downloader",
+  "version": "0.0.5",
+  "manifest_version": 2, 
+  "description": "Downloads Images from Patreon feeds",
+  "icons": {
+    "128": "icon.png",
+    "48": "icon48.png"
+  },
+  "browser_action": {
+    "name": "Manipulate DOM",
+    "icons": ["icon.png"],
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [ {
+    "js": [ "jquery.min.js", "download.js"],
+    "matches": [ "http://*.patreon.com/*", "https://*.patreon.com/*"]
+  }],
+  "permissions" : [
+    "activeTab",
+    "downloads",
+    "storage"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  }
+}

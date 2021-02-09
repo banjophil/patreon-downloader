@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="header"><img src="icon.png">Patreon Downloader</div>
+<h2>Download entire page</h2>
+
+<div class="flex-row">
+    <input type="text" id="foldername" value="subfolder"/>
+    <button class="tbutton" id="startdownload">Download</button>
+</div>
+
+
+<div class="progress flex-row">
+    <div class="message">
+        <div class="text"></div>
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    </div>
+    <button class="cbutton" id="cancel">Cancel</button>
+    <div class="progress-bar">
+        <span class="text"></span>
+        <div class="progress-inner">
+
+        </div>
+    </div>
+</div>
+
+
+<label class="switch">
+    <input type="checkbox" name="text">
+    <span class="slider round"></span>
+    <span class="label">Save Text from post</span>
+</label>
+<label class="switch">
+    <input type="checkbox" name="askbefore">
+    <span class="slider round"></span>
+    <span class="label">Confirm before downloading</span>
+</label>
+<label class="switch">
+    <input type="checkbox" name="log">
+    <span class="slider round"></span>
+    <span class="label">Show Log</span>
+</label>
+<div class="log-container">
+    <hr>
+    <div style="margin-bottom: 5px;"><strong>Log</strong></div>
+    <div class="log">
+    </div>
+</div>
+
+
+
+</div>
+<script src="jquery.min.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
