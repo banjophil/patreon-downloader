@@ -268,12 +268,16 @@ $(function(){
 
                 sendLog("Post found: " + post.name);
 
-                if (images.length > 0 && post.lockedIcon.length < 1){
+
+                if (post.lockedIcon.length > 0){
+                    sendLog('Post is locked. Moving on')
+                }
+                else if (images.length > 0){
                     posts.push(post);
                     findSlideshows(post);
 
                 } else {
-                    sendLog('No images found or post is locked. Moving on')
+                    posts.push(post);
                     scrapeData();
                 }
 
