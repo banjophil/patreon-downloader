@@ -270,7 +270,8 @@ $(function(){
 
 
                 if (post.lockedIcon.length > 0){
-                    sendLog('Post is locked. Moving on')
+                    sendLog('Post is locked. Moving on');
+                    scrapeData();
                 }
                 else if (images.length > 0){
                     posts.push(post);
