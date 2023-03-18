@@ -1,7 +1,8 @@
 
 $(function(){
+
     //Event Listeners
-    chrome.runtime.onMessage.addListener(request => {
+    chrome.runtime.onMessage.addListener( function (request, sender, sendResponse ) {
         if (request.cancel){
             cancel = true
             sendLog('cancelling');
@@ -29,6 +30,12 @@ $(function(){
             isBusy = false;
             cleanup();
         }
+
+        if (request.getSubfolder) {
+            sendResponse({response: $('h1').eq(0).text()});
+        }
+
+        return true;
 
     });
 
@@ -68,6 +75,7 @@ $(function(){
     }
 
     function cleanup(){
+        $('.pat_blocker').fadeOut().remove();
         isBusy = false;
         cancel = false;
         sendReport('ready', 'Ready');
@@ -114,6 +122,8 @@ $(function(){
         sendLog('Scraping page - please wait');
         sendReport('scraping', 'Scraping page');
 
+        $('body').append('<div class="pat_blocker" style="display:none;position:fixed; top:0; right: 0; background: rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><div class="inner" style="color: white">Patreon Downloader scraping page, please wait.</div></div>').fadeIn();
+
         if (postObjects.length > 0){
             console.log(postObjects);
             scrapeData();
@@ -125,71 +135,9 @@ $(function(){
 
     // Recursive function End case at start
     function scrapeData(){
-        if ( !cancel && currentPost == postObjects.length - 1){
+        if ( !cancel && currentPost == postObjects.length - 1 ){
 
-            console.log(posts);
-
-            let downloads = [];
-
-            function prepareDownloadObject(url, subfolder, prefix, filename = null) {
-                if (filename == null) {
-                    filename = url.substring(url.lastIndexOf('/') + 1);
-                    filename = filename.substring(0, filename.lastIndexOf('?'));
-                }
-                var subfolder = removeSpecialCharacters(subfolder);
-                return {
-                    url: url,
-                    path: 'Patreon_Downloader/' + folder + '/' + subfolder + '/' + padd(prefix) + '_' + filename
-                }
-
-            }
-
-            posts.forEach(post => {
-
-                let counter = 0;
-
-                if (post.slideshowimages) {
-                    post.slideshowimages.forEach(url => {
-                        downloads.push(prepareDownloadObject(url, post.name, counter));
-                        counter++
-                    })
-                }
-
-                if (post.postimages) {
-                    post.postimages.forEach(url => {
-                        downloads.push(prepareDownloadObject(url, post.name, counter));
-                        counter++
-                    })
-                }
-
-                if (post.text && saveText) {
-
-                    var blob = new Blob([post.text], {
-                        type: 'text/plain'
-                    });
-
-                    var url = URL.createObjectURL(blob);
-
-                    downloads.push(prepareDownloadObject(url, post.name, 0, 'posttext.txt'));
-                }
-
-            });
-
-            sendLog('Finished scraping. Sending ' + downloads.length + ' images to downloader');
-            sendReport('scraping', 'Sending to downloader');
-
-            if (!startdownload){
-                startdownload = confirm('Sending ' + downloads.length + ' images to downloader. Have you turned off "Ask where to save each file before downloading" in Chrome settings?');
-            }
-
-            if (startdownload) {
-                chrome.runtime.sendMessage({downloadSequentially: downloads})
-            } else {
-                sendLog('User cancelled download');
-                cleanup();
-            }
-
-            console.log(downloads);
+            sendToDownloader();
 
         } else if (!cancel) {
             currentPost ++;
@@ -197,6 +145,82 @@ $(function(){
         } else {
             cleanup()
         }
+    }
+
+    function sendToDownloader(){
+        console.log(posts);
+
+        let downloads = [];
+
+        function prepareDownloadObject(url, subfolder, prefix = null, filename = null) {
+            if (filename == null) {
+                filename = url.substring(url.lastIndexOf('/') + 1);
+                filename = filename.substring(0, filename.lastIndexOf('?'));
+            }
+            if (prefix != null){
+                filename = padd(prefix) + '_' + filename;
+            }
+            var subfolder = removeSpecialCharacters(subfolder);
+            return {
+                url: url,
+                path: 'Patreon_Downloader/' + folder + '/' + subfolder + '/',
+                filename: filename
+            }
+
+        }
+
+        posts.forEach(post => {
+
+            let counter = 0;
+
+            if (post.slideshowimages) {
+                post.slideshowimages.forEach(url => {
+                    downloads.push(prepareDownloadObject(url, post.name, counter));
+                    counter++
+                })
+            }
+
+            if (post.postimages) {
+                post.postimages.forEach(url => {
+                    downloads.push(prepareDownloadObject(url, post.name, counter));
+                    counter++
+                })
+            }
+
+            if (post.files){
+                post.files.forEach(url => {
+                    downloads.push(prepareDownloadObject(url, post.name, null, 'auto'));
+                })
+            }
+
+            if (post.text && saveText) {
+
+                var blob = new Blob([post.text], {
+                    type: 'text/plain'
+                });
+
+                var url = URL.createObjectURL(blob);
+
+                downloads.push(prepareDownloadObject(url, post.name, 0, 'posttext.txt'));
+            }
+
+        });
+
+        sendLog('Finished scraping. Sending ' + downloads.length + ' files to downloader');
+        sendReport('scraping', 'Sending to downloader');
+
+        if (!startdownload){
+            startdownload = confirm('Sending ' + downloads.length + ' files to the downloader. Have you turned off "Ask where to save each file before downloading" in Chrome settings? Press ok to send files to the downloader.');
+        }
+
+        if (startdownload) {
+            chrome.runtime.sendMessage({downloadSequentially: downloads})
+        } else {
+            sendLog('User cancelled download');
+            cleanup();
+        }
+
+        console.log(downloads);
     }
 
 
@@ -208,13 +232,7 @@ $(function(){
         $('html').animate({scrollTop: $(postObject).offset().top }, 1000, 'swing', function(){
 
             setTimeout(() => {
-                $(postObject).find('img').each(function(index, item){
 
-                    if (!loadedSrc.includes(item.src)){
-                        images.push(item)
-                        loadedSrc.push(item.src)
-                    }
-                });
 
                 let title = $(postObject).find('[data-tag=post-title] a').html();
                 if (!title){
@@ -222,13 +240,28 @@ $(function(){
                 }
                 title = title.replace(/\s+/g, '_').toLowerCase();
                 let prefix = ( posts.length + 1 ) < 10 ? "0" + ( posts.length + 1 ) : ( posts.length + 1 );
-                title = prefix + '_' + title;
+                let dateText = $(postObject).find("[data-tag=post-published-at] span").text();
+                let date = Date.fromString(dateText);
+                // title = prefix + '_' + title;
+                title = date.getFullYear() + '_' + date.getMonth() + '_' + date.getDate() + '_' + title;
+
+                let fileLinks = [];
 
                 post.name = title;
                 post.images = images;
                 post.slideshowimages = [];
                 post.postimages = [];
+                post.files = fileLinks;
                 post.lockedIcon = $(postObject).find('div[data-tag=locked-post-icon]');
+
+                sendLog("Scraping post: " + post.name);
+
+
+                if ( post.lockedIcon.length > 0){
+                    sendLog('Post is locked, moving on');
+                    scrapeData();
+                    return false
+                }
 
                 var textfile = ''
                 function textFileBuilder(text = '', newline){
@@ -266,18 +299,29 @@ $(function(){
 
                 post.text = textfile;
 
-                sendLog("Post found: " + post.name);
+                $(postObject).find('img').each(function(index, item){
 
+                    if (!loadedSrc.includes(item.src)){
+                        images.push(item)
+                        loadedSrc.push(item.src)
+                    }
+                });
 
-                if (post.lockedIcon.length > 0){
-                    sendLog('Post is locked. Moving on')
-                }
-                else if (images.length > 0){
+                let links = $(postObject).find('a');
+                links.each(function (){
+                    if (  $(this).attr('href').indexOf('file?') > 0 ){
+                        fileLinks.push($(this).attr('href'))
+                    };
+                });
+
+                console.log(fileLinks);
+
+                if (images.length > 0 || fileLinks.length > 0 ){
                     posts.push(post);
                     findSlideshows(post);
 
                 } else {
-                    posts.push(post);
+                    sendLog('No images or files found. Moving on');
                     scrapeData();
                 }
 
@@ -409,7 +453,8 @@ $(function(){
         })
 
         post.postimages = postimages;
-        sendLog(post.name + ' : ' + ( post.postimages.length + post.slideshowimages.length ) + ' images found' );
+        sendLog(( post.postimages.length + post.slideshowimages.length ) + ' images found' );
+        sendLog(post.files.length + ' files found' );
         chrome.storage.local.get(['pd_downloadStatus'], function(result) {
             updateProgress(0,post.postimages.length + post.slideshowimages.length + result.pd_downloadStatus[1]);
         })

@@ -20,6 +20,14 @@ $(function(){
     });
   })
 
+  chrome.tabs.query({active: true}, tabs => {
+    tabs.forEach(tab =>
+        chrome.tabs.sendMessage(tab.id, {getSubfolder: true}, null, function (response){
+          $('#foldername').val( response.response )
+        })
+    );
+  });
+
   var $message = $('.message .progress .text');
 
   chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -39,7 +47,6 @@ $(function(){
     if (changes['pd_log']){
       getLog();
     }
-
   });
 
 

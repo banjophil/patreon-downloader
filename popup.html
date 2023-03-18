@@ -2,13 +2,18 @@
 <html>
 <head>
     <link rel="stylesheet" href="popup.css">
+    <style>
+
+    </style>
+
 </head>
 <body>
 <div class="header"><img src="icon.png">Patreon Downloader</div>
-<h2>Download entire page</h2>
+<div class="text" style="margin-bottom: 10px">This extension will attempt to download all images and files from visble posts on the current page. It is recommended that you filter posts by month for a single creator.</div>
 
-<div class="flex-row">
-    <input type="text" id="foldername" value="subfolder"/>
+<div class="flex-row subfolder">
+    <label>Subfolder</label>
+    <input type="text" id="foldername" placeholder="subfolder"/>
     <button class="tbutton" id="startdownload">Download</button>
 </div>
 
@@ -54,6 +59,7 @@
 
 </div>
 <script src="jquery.min.js"></script>
+<script src="any-date-parser.min.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>

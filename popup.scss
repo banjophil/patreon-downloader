@@ -28,6 +28,7 @@ input {
 }
 
 .flex-row {
+  position: relative;
   display: flex;
   justify-content: space-between;
 }
@@ -126,9 +127,9 @@ input {
 .cbutton {
   background-color:#ededed;
   color: $pink;
-   &:hover {
-     background-color:#dbdbdb;
-   }
+  &:hover {
+    background-color:#dbdbdb;
+  }
 
 }
 
@@ -191,6 +192,15 @@ input:checked + .slider:before {
   transform: translateX(24px);
 }
 
+.subfolder label {
+  position: absolute;
+  top: -4px;
+  left: 9px;
+  background: white;
+  padding: 0 5px;
+  font-size: 9px;
+}
+
 
 .lds-ring {
   display: none;
@@ -231,3 +241,11 @@ input:checked + .slider:before {
   }
 }
 
+.log {
+  height: 260px;
+  overflow: scroll;
+  background: #313131;
+  color: lightgrey;
+  padding: 5px;
+  font-size: 10px;
+}

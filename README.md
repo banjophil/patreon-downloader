@@ -1,16 +1,16 @@
 # patreon-downloader 
 
-This extension will scrape a Patreon feed and download all posted images and slideshows. Useful for archiving.
+This extension will scrape a Patreon feed and download all posted images, slideshows and files. Useful for archiving.
 No longer in active development. Can be installed by loading an unpacked extension in Chrome. 
 https://developer.chrome.com/docs/extensions/mv2/getstarted/
 
 
 CHROME STORE TEXT
-Due to the reactive nature of the Patreon front end, the only way to download slideshow images is to simulate a user interacting with the site. Please don't complain that you don't want to sit through slideshows, it's the only way I can get all the urls. Please don't complain that the files are named incorrectly. I do not have access to the original filename in a slideshow. The reason images are downloaded at the end of the process is that network errors or timeouts will break the scraping, so trying to download a large file while scraping is a bad idea. 
+Due to the reactive nature of the Patreon front end, the only way to download slideshow images is to simulate a user interacting with the site. Please don't complain that you don't want to sit through slideshows, it's the only way I can get all the urls. . The reason images are downloaded at the end of the process is that network errors or timeouts will break the scraping, so trying to download a large file while scraping is a bad idea. 
 
-I highly suggest filtering the feed by month or selecting single posts for feeds with a lot of images. You will need a fairly fast connection as network errors will stop the scraping.
+I highly suggest filtering the feed by month or selecting single posts for feeds with a lot of images or files. You will need a fairly fast connection as network errors will stop the scraping.
 
-The extension will take control of the website and attempt to find all images. It then sends the images to be downloaded sequentially. 
+The extension will take control of the website and attempt to find all images and files. It then sends the urls to be downloaded sequentially. 
 
 To use simply load the page you want to archive, you can stop the page loading once the dom has loaded if you don't want to wait for all the images to download. Then press download. Images will be downloaded to downloads/Patreon_Downloader/ in the given folder and in subfolders named after the post titles.
 
@@ -19,6 +19,11 @@ WARNING: If you haven't set up a default download directory, you will have to ma
 If you have a network error while scraping a slideshow, you can right click on the image missing icon and select "load image". The scraper will continue.
 
 CHANGELOG:
+0.0.6
+File links downloaded as well as images
+Main subfolder named after the creator
+Post subfolder named after the post date and not the sequence
+
 0.0.5
 Add option to save all text from post
 Add option to not confirm before downloading
