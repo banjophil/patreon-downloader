@@ -15,7 +15,12 @@ chrome.downloads.onDeterminingFilename.addListener( (item, suggest) => {
     console.log(item);
     var originalDownload = downloadArray.find( x => x.url == item.url );
     console.log(originalDownload)
-    suggest({filename: originalDownload.path + item.filename, conflictAction: "overwrite"})
+    if (originalDownload.filename == 'posttext.txt'){
+        suggest({filename: originalDownload.path + originalDownload.filename, conflictAction: "uniquify"})
+    } else {
+        suggest({filename: originalDownload.path + item.filename, conflictAction: "uniquify"})
+    }
+
 })
 
 var cancel = false;

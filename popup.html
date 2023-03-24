@@ -12,9 +12,9 @@
 <div class="text" style="margin-bottom: 10px">This extension will attempt to download all images and files from visble posts on the current page. It is recommended that you filter posts by month for a single creator.</div>
 
 <div class="flex-row subfolder">
-    <label>Subfolder</label>
+    <label>Creator</label>
     <input type="text" id="foldername" placeholder="subfolder"/>
-    <button class="tbutton" id="startdownload">Download</button>
+    <button class="tbutton" id="startdownload">Scrape Page</button>
 </div>
 
 
@@ -32,7 +32,11 @@
     </div>
 </div>
 
-
+<label class="switch">
+    <input type="checkbox" name="scrapeSlideshows" >
+    <span class="slider round"></span>
+    <span class="label">Scrape Slideshows</span>
+</label>
 <label class="switch">
     <input type="checkbox" name="text">
     <span class="slider round"></span>

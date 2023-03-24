@@ -1,7 +1,6 @@
 
 $(function(){
 
-
   $('#startdownload').click(function(){
     let folder = $('#foldername').val();
     chrome.tabs.query({ active: true }, tabs => {
@@ -20,13 +19,19 @@ $(function(){
     });
   })
 
+
   chrome.tabs.query({active: true}, tabs => {
     tabs.forEach(tab =>
         chrome.tabs.sendMessage(tab.id, {getSubfolder: true}, null, function (response){
-          $('#foldername').val( response.response )
+          if (response){
+            $('#foldername').val( response.response )
+          } else {
+            // alert('Patreon Downloader. Patreon not found or page is not ready. Please refresh the page or reopen the plugin popup')
+          }
         })
     );
   });
+
 
   var $message = $('.message .progress .text');
 
@@ -95,6 +100,19 @@ $(function(){
   }
   getTextVisibilty()
 
+  function getScrapeSlideshows(){
+    chrome.storage.local.get(['pd_scrapeSlideshows'], function(result) {
+      if ( result.pd_scrapeSlideshows == true ){
+        $('.switch input[name=scrapeSlideshows]').attr('checked', 'checked');
+        // $('.switch input[name=scrapeSlideshows]').attr('checked', false);
+      } else {
+        $('.switch input[name=scrapeSlideshows]').attr('checked', false)
+      }
+
+    });
+  }
+  getScrapeSlideshows()
+
   function getAskBeforeOption(){
     chrome.storage.local.get(['pd_askBefore'], function(result) {
       if ( result.pd_askBefore != false ){
@@ -129,6 +147,14 @@ $(function(){
       chrome.storage.local.set({pd_askBefore: true});
     } else {
       chrome.storage.local.set({pd_askBefore: false});
+    }
+  })
+
+  $('.switch input[name=scrapeSlideshows]').change(function(){
+    if ( $(this)[0].checked === true ) {
+      chrome.storage.local.set({pd_scrapeSlideshows: true});
+    } else {
+      chrome.storage.local.set({pd_scrapeSlideshows: false});
     }
   })
 

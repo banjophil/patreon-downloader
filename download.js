@@ -39,6 +39,13 @@ $(function(){
 
     });
 
+    $('body').on('click', function (e) {
+       console.log(e.target);
+       if (e.target.id === 'pat_blocker_cancel'){
+           cancelScraping();
+       }
+    });
+
     // Reporting Functions
 
     function sendLog(message = '') {
@@ -74,6 +81,12 @@ $(function(){
         return string.replace(/[^\w\s]/gi, '')
     }
 
+    function cancelScraping(){
+        cancel = true
+        sendLog('cancelling');
+        sendReport('', 'Cancelling');
+    }
+
     function cleanup(){
         $('.pat_blocker').fadeOut().remove();
         isBusy = false;
@@ -93,6 +106,9 @@ $(function(){
     let isBusy = false;
     let saveText = false;
     let startdownload = false;
+    let scrapeSlideshows = false;
+    var loadmorebuttoncounter = 0;
+    let currentYear = false;
 
     sendReport('ready', 'Ready');
     chrome.storage.local.remove('pd_log');
@@ -105,40 +121,82 @@ $(function(){
             }
 
             startdownload = !result.pd_askBefore;
-
-            findPosts();
+            scrapeSlideshows = result.pd_scrapeSlideshows;
+            setupDocument();
         })
     }
 
+    function setupDocument(){
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        if (!urlParams.has('filters[month]')){
+            alert('Please use a single creator filtered by months')
+            cleanup();
+            return false;
+        } else {
+            currentYear = urlParams.get('filters[month]').substr(0,4)
+        }
+
+
+        if ( $('.pat_blocker').length === 0 ){
+            $('body').append('<div class="pat_blocker" style=""><div class="inner">Patreon Downloader scraping page, please wait.<br><button id="pat_blocker_cancel" href="#">Cancel</button></div></div>').fadeIn();
+        }
+
+        //find loadmore buttons?
+        var loadMoreButton = false;
+        $('button').each(function (){
+            var $button = $(this);
+            if ($button.text().toLowerCase() == 'load more' ) {
+                loadMoreButton = $(this);
+            }
+        })
+
+        if (!loadMoreButton){
+            findPosts();
+        } else {
+                loadmorebuttoncounter ++;
+                var clickLoadMore = confirm(loadmorebuttoncounter + ' --Load More-- button found. Should I click it for you? Cancel will start the scraper but scrape only the visible posts on this page');
+                if (clickLoadMore){
+                    loadMoreButton.trigger('click');
+                    setTimeout(function (){
+                        setupDocument();
+                    }, 3000)
+                }
+        }
+
+
+    }
+
     function findPosts() {
+
         Thelog = '';
         isBusy = true;
         cancel = false;
         currentPost = -1;
         posts = [];
-        postObjects = $('[data-tag=post-card]');
-        chrome.storage.local.remove('pd_log');
 
+        postObjects = $('[data-tag=post-card]');
+
+        chrome.storage.local.remove('pd_log');
         sendLog('Scraping page - please wait');
         sendReport('scraping', 'Scraping page');
-
-        $('body').append('<div class="pat_blocker" style="display:none;position:fixed; top:0; right: 0; background: rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; width: 100%; height: 100%"><div class="inner" style="color: white">Patreon Downloader scraping page, please wait.</div></div>').fadeIn();
 
         if (postObjects.length > 0){
             console.log(postObjects);
             scrapeData();
         } else {
             alert('Sorry, no posts found!')
+            cleanup();
             return false;
         }
     }
 
+
     // Recursive function End case at start
     function scrapeData(){
         if ( !cancel && currentPost == postObjects.length - 1 ){
-
             sendToDownloader();
-
         } else if (!cancel) {
             currentPost ++;
             setupPost(postObjects[currentPost]);
@@ -201,7 +259,7 @@ $(function(){
 
                 var url = URL.createObjectURL(blob);
 
-                downloads.push(prepareDownloadObject(url, post.name, 0, 'posttext.txt'));
+                downloads.push(prepareDownloadObject(url, post.name, null, 'posttext.txt'));
             }
 
         });
@@ -243,7 +301,7 @@ $(function(){
                 let dateText = $(postObject).find("[data-tag=post-published-at] span").text();
                 let date = Date.fromString(dateText);
                 // title = prefix + '_' + title;
-                title = date.getFullYear() + '_' + date.getMonth() + '_' + date.getDate() + '_' + title;
+                title = currentYear + '_' + ( date.getMonth() + 1 ) + '_' + date.getDate() + '_' + title;
 
                 let fileLinks = [];
 
@@ -255,7 +313,6 @@ $(function(){
                 post.lockedIcon = $(postObject).find('div[data-tag=locked-post-icon]');
 
                 sendLog("Scraping post: " + post.name);
-
 
                 if ( post.lockedIcon.length > 0){
                     sendLog('Post is locked, moving on');
@@ -313,12 +370,16 @@ $(function(){
                         fileLinks.push($(this).attr('href'))
                     };
                 });
-
-                console.log(fileLinks);
+                sendLog(fileLinks.length + ' files found' );
 
                 if (images.length > 0 || fileLinks.length > 0 ){
                     posts.push(post);
-                    findSlideshows(post);
+                    findPostImages(post);
+                    if (scrapeSlideshows){
+                        findSlideshows(post);
+                    } else {
+                        scrapeData();
+                    }
 
                 } else {
                     sendLog('No images or files found. Moving on');
@@ -368,7 +429,7 @@ $(function(){
         setTimeout(() => {
             if (!foundLightbox){
                 observer.disconnect();
-                findPostImages(post);
+                scrapeData();
             }
         }, 2000);
 
@@ -416,13 +477,11 @@ $(function(){
             } else {
                 buttons[0].click();
             }
-
             if (!cancel){
-                setTimeout( findPostImages(post), 1000 )
+                scrapeData()
             } else {
                 cleanup();
             }
-
         }
 
         element.addEventListener('load', function(){
@@ -454,12 +513,9 @@ $(function(){
 
         post.postimages = postimages;
         sendLog(( post.postimages.length + post.slideshowimages.length ) + ' images found' );
-        sendLog(post.files.length + ' files found' );
         chrome.storage.local.get(['pd_downloadStatus'], function(result) {
             updateProgress(0,post.postimages.length + post.slideshowimages.length + result.pd_downloadStatus[1]);
         })
-
-        scrapeData();
     }
 
 

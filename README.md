@@ -19,11 +19,13 @@ WARNING: If you haven't set up a default download directory, you will have to ma
 If you have a network error while scraping a slideshow, you can right click on the image missing icon and select "load image". The scraper will continue.
 
 CHANGELOG:
+0.0.8
+Scraping slideshows optional
+Files are not overriden when downloading
 0.0.6
 File links downloaded as well as images
 Main subfolder named after the creator
 Post subfolder named after the post date and not the sequence
-
 0.0.5
 Add option to save all text from post
 Add option to not confirm before downloading

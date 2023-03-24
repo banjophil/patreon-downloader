@@ -1,6 +1,6 @@
 {
   "name": "Patreon Downloader",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "manifest_version": 2,
   "description": "Downloads images and files from Patreon feeds",
   "icons": {
@@ -15,6 +15,7 @@
   },
   "content_scripts": [ {
     "js": [ "jquery.min.js", "any-date-parser.min.js", "download.js"],
+    "css" : ["download.css"],
     "matches": [ "http://*.patreon.com/*", "https://*.patreon.com/*"]
   }],
   "permissions" : [
