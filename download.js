@@ -130,12 +130,16 @@ $(function(){
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
 
-        if (!urlParams.has('filters[month]')){
-            alert('Please use a single creator filtered by months')
+        if (urlParams.has('filters[month]')){
+            currentYear = urlParams.get('filters[month]').substr(0,4);
+
+        } else if( window.location.href.indexOf('/posts/') > 0 ) {
+            var d = new Date();
+            currentYear = d.getFullYear();
+        } else {
+            alert('Please use a single creator filtered by a month or a single post')
             cleanup();
             return false;
-        } else {
-            currentYear = urlParams.get('filters[month]').substr(0,4)
         }
 
 

@@ -1,6 +1,6 @@
 {
   "name": "Patreon Downloader",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "manifest_version": 2,
   "description": "Downloads images and files from Patreon feeds",
   "icons": {
