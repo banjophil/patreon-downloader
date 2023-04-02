@@ -166,6 +166,8 @@ $(function(){
                     setTimeout(function (){
                         setupDocument();
                     }, 3000)
+                } else {
+                    findPosts();
                 }
         }
 
@@ -303,9 +305,19 @@ $(function(){
                 title = title.replace(/\s+/g, '_').toLowerCase();
                 let prefix = ( posts.length + 1 ) < 10 ? "0" + ( posts.length + 1 ) : ( posts.length + 1 );
                 let dateText = $(postObject).find("[data-tag=post-published-at] span").text();
-                let date = Date.fromString(dateText);
-                // title = prefix + '_' + title;
-                title = currentYear + '_' + ( date.getMonth() + 1 ) + '_' + date.getDate() + '_' + title;
+                console.log('datetext: ' + dateText);
+
+                if (dateText.length > 0){
+                    let date = Date.fromString(dateText);
+                    if (typeof date.getMonth === 'function' ){
+                        title = currentYear + '_' + ( date.getMonth() + 1 ) + '_' + date.getDate() + '_' + title;
+                    } else {
+                        console.log(date);
+                        title = prefix + '_' + title;
+                    }
+                } else {
+                    title = prefix + '_' + title;
+                }
 
                 let fileLinks = [];
 
