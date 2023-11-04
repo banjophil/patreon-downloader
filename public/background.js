@@ -1,5 +1,6 @@
 
 var downloadArray = [];
+var cancel = false;
 
 chrome.runtime.onMessage.addListener(request => {
     if (request.downloadSequentially) {
@@ -23,7 +24,6 @@ chrome.downloads.onDeterminingFilename.addListener( (item, suggest) => {
 
 })
 
-var cancel = false;
 
 function downloadSequentially(downloads) {
     downloadArray = downloads;
@@ -37,7 +37,6 @@ function downloadSequentially(downloads) {
     function next() {
         chrome.storage.local.set({pd_downloadStatus: [index, downloads.length]});
         chrome.storage.local.set({pd_status: 'downloading'});
-        chrome.storage.local.set({pd_statusMessage: 'Downloading'});
 
         if (cancel) {
             chrome.tabs.query({ active: true }, tabs => {
@@ -88,4 +87,8 @@ function downloadSequentially(downloads) {
         }
     }
 }
-    
+
+chrome.runtime.onInstalled.addListener(function (){
+  chrome.tabs.create({url:chrome.runtime.getURL("update.html")},function(){})
+})
+
