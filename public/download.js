@@ -32,6 +32,7 @@ $(function(){
 
       scrapeSlideshows = request.scrapeslideshows;
       saveText = request.savetext;
+      confirmbefore = request.confirmbefore;
 
       setupDocument();
 
@@ -119,6 +120,7 @@ $(function(){
   let saveText = false;
   let startdownload = false;
   let scrapeSlideshows = false;
+  let confirmbefore = false;
   var loadmorebuttoncounter = 0;
 
   sendReport('ready', 'Ready');
@@ -261,7 +263,11 @@ $(function(){
     sendLog('Finished scraping. Sending ' + downloads.length + ' files to downloader');
     sendReport('scraping', 'Sending to downloader');
 
-    startdownload = confirm('Sending ' + downloads.length + ' files to the downloader. Have you turned off "Ask where to save each file before downloading" in Chrome settings? Press ok to send files to the downloader.');
+    if (confirmbefore){
+      startdownload = confirm('Sending ' + downloads.length + ' files to the downloader. Have you turned off "Ask where to save each file before downloading" in Chrome settings? Press ok to send files to the downloader.');
+    } else {
+      startdownload = true;
+    }
 
     if (startdownload) {
       chrome.runtime.sendMessage({downloadSequentially: downloads})
@@ -378,7 +384,7 @@ $(function(){
         });
         sendLog(fileLinks.length + ' files found' );
 
-        if (images.length > 0 || fileLinks.length > 0 ){
+        if (images.length > 0 || fileLinks.length > 0 || saveText ){
           posts.push(post);
           findPostImages(post);
           if (scrapeSlideshows){

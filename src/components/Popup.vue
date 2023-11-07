@@ -43,6 +43,7 @@
         </v-row>
         <v-divider class="my-2"></v-divider>
 
+
         <div class="d-flex justify-space-between">
           <v-switch color="red-lighten-2" density="compact" v-model="pd_scrapeSlideshows" label="Scrape slideshows"></v-switch>
           <div style="position: relative; top: 5px;">
@@ -67,6 +68,18 @@
             </v-tooltip>
           </div>
         </div>
+        <div class="d-flex justify-space-between">
+          <v-switch color="red-lighten-2" density="compact" v-model="pd_confirmbefore" label="Confirm before downloading"></v-switch>
+          <div style="position: relative; top: 5px;">
+            <v-icon icon="mdi-information" color="red-lighten-2"></v-icon>
+            <v-tooltip
+              activator="parent"
+              location="end"
+              text = "This will raise a popup when finished scraping before the files are sent to the downloader. Setting this will allow you to cancel after the scrape, but will require that you stay on the window or tab where the scraping is taking place."
+            >
+            </v-tooltip>
+          </div>
+        </div>
 
         <v-btn color="red-lighten-2" @click="scrapePage()"> {{actionButtonText}}</v-btn>
 
@@ -83,8 +96,8 @@
 
       </v-container>
       <v-footer class="d-flex justify-space-between bg-red-lighten-3">
-        <div class="text-caption">v.0.1.0</div>
-        <div class="links"><v-btn density="compact" icon="mdi-github"></v-btn></div>
+        <div class="text-caption">v.{{ currentVersion }}</div>
+        <div class="links"><v-btn href="https://github.com/banjophil/patreon-downloader" target="_blank" density="compact" icon="mdi-github"></v-btn></div>
         <div class="right"><v-btn href="https://www.buymeacoffee.com/patreondloader" target="_blank" density="compact">BUY ME A COFFEE</v-btn></div>
       </v-footer>
     </v-main>
@@ -110,7 +123,9 @@ export default {
     status: 'ready',
     log: '',
     pd_downloadStatus: [0,0],
-    creatorName: 'creator'
+    creatorName: 'creator',
+    currentVersion: '0.1.1',
+    pd_confirmbefore: true
   }),
   watch: {
     pd_saveText(newvalue, oldvalue){
@@ -121,6 +136,9 @@ export default {
     },
     pd_showLog(newvalue, oldvalue){
       chrome.storage.local.set({pd_showLog: newvalue});
+    },
+    pd_confirmbefore(newvalue, oldvalue){
+      chrome.storage.local.set({pd_confirmbefore: newvalue});
     }
   },
   methods: {
@@ -145,7 +163,8 @@ export default {
         mode: this.mode,
         testkey: 'really dickhead',
         savetext: this.pd_saveText,
-        scrapeslideshows: this.pd_scrapeSlideshows
+        scrapeslideshows: this.pd_scrapeSlideshows,
+        confirmbefore: this.pd_confirmbefore
       })
 
     }
@@ -199,7 +218,7 @@ export default {
     } );
 
     // options to load
-    var options = ['pd_saveText', 'pd_scrapeSlideshows']
+    var options = ['pd_saveText', 'pd_scrapeSlideshows', 'pd_confirmbefore']
     options.forEach(function (value, index, array) {
       v.getOption(value);
     })
