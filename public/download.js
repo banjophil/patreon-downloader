@@ -288,10 +288,13 @@ $(function(){
     $('html').animate({scrollTop: $(postObject).offset().top }, 1000, 'swing', function(){
 
       setTimeout(() => {
-
-        let title = $(postObject).find('[data-tag=post-title] a').html();
+        let title = false;
+        title = $(postObject).find('[data-tag=post-title] a').html();
         if (!title){
           title = $(postObject).find('[data-tag=post-title]').html();
+        }
+        if (!title){
+          title = 'post title not found'
         }
         title = title.replace(/\s+/g, '_').toLowerCase();
         let prefix = ( posts.length + 1 ) < 10 ? "0" + ( posts.length + 1 ) : ( posts.length + 1 );
@@ -342,6 +345,7 @@ $(function(){
 
         let collapsedContent = $(postObject).find('div[data-tag=post-content-collapse] p')
         let normalContent = $(postObject).find('div[data-tag=post-content] p');
+        let allContent = $(postObject).find('p,li');
 
         textFileBuilder( 'Content:');
         textFileBuilder( );
@@ -353,6 +357,14 @@ $(function(){
         normalContent.each(function () {
           textFileBuilder( $(this).text());
         })
+
+        if (collapsedContent.length == 0 && normalContent.length == 0){
+          if ( allContent.length ){
+            allContent.each( function () {
+              textFileBuilder( $(this).text());
+            } )
+          }
+        }
 
         textFileBuilder();
         textFileBuilder( 'Comments:');

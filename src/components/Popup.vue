@@ -124,7 +124,7 @@ export default {
     log: '',
     pd_downloadStatus: [0,0],
     creatorName: 'creator',
-    currentVersion: '0.1.1',
+    currentVersion: '0.1.2',
     pd_confirmbefore: true
   }),
   watch: {
