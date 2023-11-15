@@ -36,9 +36,14 @@
             <h5 class="text-uppercase">{{mode}}</h5>
           </v-col>
           <v-col cols="9">
-            <div> <h6>Save Location:</h6>
-              Patreon_Downloader/{{saveLocation}}</div>
-
+            <h6>Creator name (folder):</h6>
+            <v-text-field v-model="creatorName" density="compact" hide-details="hide-details"></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+             <h6>Save Location:</h6>
+            <div style="word-break: break-all">Patreon_Downloader/{{saveLocation}}</div>
           </v-col>
         </v-row>
         <v-divider class="my-2"></v-divider>
@@ -124,7 +129,7 @@ export default {
     log: '',
     pd_downloadStatus: [0,0],
     creatorName: 'creator',
-    currentVersion: '0.1.2',
+    currentVersion: '0.1.3',
     pd_confirmbefore: true
   }),
   watch: {
@@ -161,7 +166,6 @@ export default {
         action : 'scrapepage',
         creator: this.creatorName,
         mode: this.mode,
-        testkey: 'really dickhead',
         savetext: this.pd_saveText,
         scrapeslideshows: this.pd_scrapeSlideshows,
         confirmbefore: this.pd_confirmbefore

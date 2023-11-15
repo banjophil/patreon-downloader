@@ -27,7 +27,7 @@ $(function(){
       if (request.creator.length > 1){
         folder = request.creator
       } else {
-        folder = ''
+        folder = 'none'
       }
 
       scrapeSlideshows = request.scrapeslideshows;
@@ -45,7 +45,13 @@ $(function(){
     }
 
     if (request.getSubfolder) {
-      sendResponse({response: $('h1').eq(0).text()});
+      var h1 = $('h1').eq(0).text();
+      if (h1.length > 0){
+        sendResponse({response: h1});
+      } else {
+        sendResponse({response: 'not_found'})
+      }
+
     }
 
     return true;
@@ -114,7 +120,7 @@ $(function(){
   let posts = [];
   let currentPost = -1;
   let postObjects;
-  let folder = '';
+  let folder = 'none';
   let Thelog = '';
   let isBusy = false;
   let saveText = false;

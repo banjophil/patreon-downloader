@@ -20,6 +20,8 @@ WARNING: If you haven't set up a default download directory, you will have to ma
 If you have a network error while scraping a slideshow, you can right click on the image missing icon and select "load image". The scraper will continue.
 
 CHANGELOG:
+0.1.3
+Returned ability to set folder name, folder defaults. 
 0.1.0
 Major redesign
 Attempts to save with folders as creator name and date of the post
