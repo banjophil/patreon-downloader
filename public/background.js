@@ -88,7 +88,7 @@ function downloadSequentially(downloads) {
     }
 }
 
-chrome.runtime.onInstalled.addListener(function (){
-  chrome.tabs.create({url:chrome.runtime.getURL("update.html")},function(){})
-})
+// chrome.runtime.onInstalled.addListener(function (){
+//   chrome.tabs.create({url:chrome.runtime.getURL("update.html")},function(){})
+// })
 

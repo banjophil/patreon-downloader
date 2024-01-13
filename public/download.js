@@ -364,10 +364,13 @@ $(function(){
           textFileBuilder( $(this).text());
         })
 
-        if (collapsedContent.length == 0 && normalContent.length == 0){
+        if (collapsedContent.length == 0 || normalContent.length == 0){
           if ( allContent.length ){
             allContent.each( function () {
-              textFileBuilder( $(this).text());
+              if ( $(this).closest('[data-tag=comment-row], [data-tag="comment-post-icon"]').length === 0 ){
+                textFileBuilder( $(this).text());
+
+              }
             } )
           }
         }

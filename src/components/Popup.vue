@@ -18,7 +18,6 @@
         The plugin will scrape the page by impersonating a user. <br>
         It is highly recommended that you turn off the "Ask to save each file before downloading" option in chrome before scraping. Otherwise many popup windows will be opened.
         <v-btn href="https://chrome.google.com/webstore/detail/patreon-downloader/fmhpbbdpdhjkpbklloabkncldkmggaik" target="_blank" variant="tonal" class="mt-2">Suport</v-btn>
-        <v-btn href="https://www.buymeacoffee.com/patreondloader" target="_blank" variant="tonal" class="mt-2">Buy me a coffee</v-btn>
       </v-container>
     </v-navigation-drawer>
     <v-navigation-drawer v-model="consoleOpen" location="left" temporary width="100%">
@@ -103,7 +102,6 @@
       <v-footer class="d-flex justify-space-between bg-red-lighten-3">
         <div class="text-caption">v.{{ currentVersion }}</div>
         <div class="links"><v-btn href="https://github.com/banjophil/patreon-downloader" target="_blank" density="compact" icon="mdi-github"></v-btn></div>
-        <div class="right"><v-btn href="https://www.buymeacoffee.com/patreondloader" target="_blank" density="compact">BUY ME A COFFEE</v-btn></div>
       </v-footer>
     </v-main>
     <v-main v-if="!location">
@@ -129,7 +127,7 @@ export default {
     log: '',
     pd_downloadStatus: [0,0],
     creatorName: 'creator',
-    currentVersion: '0.1.3',
+    currentVersion: '0.1.4',
     pd_confirmbefore: true
   }),
   watch: {
