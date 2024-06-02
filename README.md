@@ -1,5 +1,12 @@
 # patreon-downloader 
 
+## PROJECT ABANDONED -- removed from chrome store
+I originally created this extension to be able to archive creators that I supported who uploaded a lot of files or images in slideshows. Month per month I would achive the posts. After patreon removed the ability to filter by month this extension is no longer useful to me. There are usually too many posts in a year to scrape and download at once. In addition there are so many file formats and so many ways that creators can include files in posts this has become a nightmare to test. Especially as I cant test it on creators that I havent paid for. Every time patreon updates their layout this also needs to be updated.
+
+**If this is somehow still useful for you, you can install the dist.zip folder manually as a chrome extension.**
+
+////////
+
 This extension will scrape a Patreon feed and download all posted images, slideshows and files. Useful for archiving.
 
 No longer in active development. Old versions can be installed by loading an unpacked extension in Chrome. 
